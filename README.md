@@ -1,8 +1,7 @@
 # Academic Presentation Rehearsal Agent
 This is the git repository for the Academic Presentation Rehearsal Agent.
-
+![AcaPre_Agent](./fig/DALL_E_presentation.webp)
 ## Purpose 
-
 The app will allow users to:
 1. Upload their presentation materials (Paper PDFs / Slides).
 2. Record presentations using Zoom-like features with webcam and microphone input.
