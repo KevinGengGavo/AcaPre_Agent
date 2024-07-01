@@ -24,7 +24,7 @@ The app will allow users to:
 
 3. **Accentedness Checking:**
    - Focus on the quality of local pronunciation and point out poorly pronounced words. If possible, provide the proper pronunciation.
-
+   - **Expected Feedback:** `<Start_time_stamp> <Stop_time_Stamp>: Unintelligibile Pronouciation. Please try to say: ***`
 ### UI Model
 1. As the video/audio will be a temporal sequence, label the timestamps of the parts that need fixing.
 2. Make it interactive: by clicking the timestamp link, the playback should jump to the related timestamp.
