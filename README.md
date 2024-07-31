@@ -28,3 +28,6 @@ The app will allow users to:
 1. As the video/audio will be a temporal sequence, label the timestamps of the parts that need fixing.
 2. Make it interactive: by clicking the timestamp link, the playback should jump to the related timestamp.
 3. Provide feedback as a PDF report or a video with annotations.
+
+![UIdraft](./fig/acapreagent_UIdraft.png)
+
