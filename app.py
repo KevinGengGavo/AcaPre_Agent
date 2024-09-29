@@ -32,6 +32,8 @@ def filler_transcribe_with_timestamps(audio, filler=False):
 
     # load dummy dataset and read audio files    
     sample, sr= torchaudio.load(audio)
+    if sample.shape[0] > 1:
+        sample = sample.mean(dim=0, keepdim=True)
     # if sr != 16000, resample to 16000
     if sr != 16000:
         sample = torchaudio.transforms.Resample(sr, 16000)(sample)
