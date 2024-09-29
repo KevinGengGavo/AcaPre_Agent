@@ -1,0 +1,4 @@
+torch
+gradio
+transformers
+gradio_client 
