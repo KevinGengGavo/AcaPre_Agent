@@ -1,3 +1,14 @@
+---
+title: AcaPre_Agent
+colorFrom: blue
+colorTo: blue
+sdk: gradio
+sdk_version: 4.44.0
+app_file: app.py
+pinned: false
+license: afl-3.0
+---
+
 # Academic Presentation Rehearsal Agent
 This is the git repository for the Academic Presentation Rehearsal Agent.
 ![AcaPre_Agent](./fig/DALL_E_presentation.webp)
