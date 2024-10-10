@@ -22,7 +22,7 @@ def pdf_to_image(path):
 
     return imgs64
 
-def suggestion(path):
+def trans2marp(path):
     load_dotenv()
     #pdfをBase64形式image群に変換
     imgs = pdf_to_image(path)
@@ -64,4 +64,35 @@ def suggestion(path):
 
     return res.choices[0].message.content
 
-    
+def suggestion(path):
+    load_dotenv()
+
+    client = OpenAI(
+        api_key=os.environ["API_KEY"]
+    )
+
+    marp = trans2marp(path)
+
+    _messages = [
+        {
+                "role":"user",
+                "content":[
+                    {
+                        "type": "text",
+                        "text": "あなたは、スライドのテーマに関して見識の深い教授です。まずスライド全体の要約をしてください。加えて、以下のmarpテキストに対して、論文発表を想定してスライド同士の関係から議論の抜け漏れがないか確認してください。情報が足りない場合には、スライド何枚目にどんな情報を追加するべきか提案してください。"
+                    },
+                    {
+                        "type": "text",
+                        "text": marp
+                    }
+                ]
+        }
+    ]
+
+    res = client.chat.completions.create(
+        model = "gpt-4o",
+        messages = _messages
+    )
+
+    return res.choices[0].message.content
+
