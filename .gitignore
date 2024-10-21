@@ -3,3 +3,4 @@ output/*
 lib/__pycache__/*
 .env
 cache/*
+audio_slices/*

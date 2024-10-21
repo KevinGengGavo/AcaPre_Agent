@@ -73,6 +73,8 @@ def get_audio_slice(audio, start, end):
 #         dataframe.append({'text': item['text'], 'audio': output_gradio_audio})
 #     return result["text"], result["chunks"], dataframe
     
+sentence_analysis_table = gr.DataFrame(label="Sentence Analysis", headers=["Transcription", "Audio", "Start", "End"], datatype="markdown", wrap=True)
+
 def transcribe_with_timestamps(audio, sentence_analysis=False):
     # Use the pipeline to transcribe the audio with timestamps
     result = asr_pipeline(audio, return_timestamps="word")
@@ -82,16 +84,22 @@ def transcribe_with_timestamps(audio, sentence_analysis=False):
         sentence_ts = wordts2sentencets(result["text"], result["chunks"])
         # get audio slice
         sentence_analysis_table = []
-        for item in sentence_ts:
+        for id, item in enumerate(sentence_ts):
             # get timestamp
             start = item['timestamp'][0]
             end = item['timestamp'][1]
             # get audio slice
             audio_slice = get_audio_slice(audio, start, end)
             audio_tuple = (audio_slice[1], audio_slice[0])
-            output_gradio_audio = gr.Audio(type="numpy", value=audio_tuple)
-            sentence_analysis_table.append({'text': item['text'], 'audio': output_gradio_audio})
-        sentence_dataframe = [[item['text'], item['audio']] for item in sentence_analysis_table]
+            # save audio slice
+            audio_slice_path = f"./audio_slices/{id}.wav"
+            torchaudio.save(audio_slice_path, torch.tensor(audio_slice[0]).unsqueeze(0), 16000)
+            sentence_analysis_table.append({'text': item['text'], 'audio': audio_slice_path, "start": start, "end": end})
+        sentence_dataframe = [[item['text'], item['audio'], item["start"], item["end"]] for item in sentence_analysis_table]
+        # make item["audio"] into markdown playable audio string
+        for item in sentence_dataframe:
+            # item[1] = f"<audio controls><source src='{item[1]}' type='audio/wav'></audio>"
+            item[1] = f"<audio src='/file={item[1]}' controls></audio>"
         return result["text"], result["chunks"], sentence_dataframe
         
 def dataset_update(sentence_dataframe):
@@ -126,19 +134,6 @@ def filler_transcribe_with_timestamps(audio, filler=False):
         transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True, normalize=True)
     
     return transcription
-    # print(transcription)
-    # Use the pipeline to transcribe the audio with timestamps
-    
-    # return result["text"], result["chunks"]
-# import pdb; pdb.set_trace()
-# x = transcribe_with_timestamps("/Users/kevingeng/GAVO_Lab/Summary_202404/wavs/0056-0000_V001_SS_B119004.wav", True)
-
-
-# # x = (' So, these are my ideas for the individual questions. If you have anything else, feel free to ask them. However, please make sure that you avoid the questions on the list.', [{'text': ' So,', 'timestamp': (0.0, 0.96)}, {'text': ' these', 'timestamp': (0.96, 1.8)}, {'text': ' are', 'timestamp': (1.8, 2.16)}, {'text': ' my', 'timestamp': (2.16, 2.4)}, {'text': ' ideas', 'timestamp': (2.4, 2.9)}, {'text': ' for', 'timestamp': (2.9, 3.76)}, {'text': ' the', 'timestamp': (3.76, 4.06)}, {'text': ' individual', 'timestamp': (4.06, 4.72)}, {'text': ' questions.', 'timestamp': (4.72, 6.26)}, {'text': ' If', 'timestamp': (6.26, 6.48)}, {'text': ' you', 'timestamp': (6.48, 6.64)}, {'text': ' have', 'timestamp': (6.64, 6.84)}, {'text': ' anything', 'timestamp': (6.84, 7.3)}, {'text': ' else,', 'timestamp': (7.3, 8.52)}, {'text': ' feel', 'timestamp': (8.52, 9.02)}, {'text': ' free', 'timestamp': (9.02, 9.28)}, {'text': ' to', 'timestamp': (9.28, 9.5)}, {'text': ' ask', 'timestamp': (9.5, 9.84)}, {'text': ' them.', 'timestamp': (9.84, 11.46)}, {'text': ' However,', 'timestamp': (11.46, 12.54)}, {'text': ' please', 'timestamp': (12.54, 12.92)}, {'text': ' make', 'timestamp': (12.92, 13.16)}, {'text': ' sure', 'timestamp': (13.16, 13.62)}, {'text': ' that', 'timestamp': (13.62, 14.28)}, {'text': ' you', 'timestamp': (14.28, 14.58)}, {'text': ' avoid', 'timestamp': (14.58, 15.08)}, {'text': ' the', 'timestamp': (15.08, 15.4)}, {'text': ' questions', 'timestamp': (15.4, 15.94)}, {'text': ' on', 'timestamp': (15.94, 16.28)}, {'text': ' the', 'timestamp': (16.28, 16.44)}, {'text': ' list.', 'timestamp': (16.44, 17.02)}])
-# # pdb.set_trace()
-# # sentence_ts = wordts2sentencets(x[0], x[1])
-# # sentence_ts = [{'timestamp': [0.0, 6.26], 'text': ' So, these are my ideas for the individual questions.'}, {'timestamp': [6.26, 11.46], 'text': ' If you have anything else, feel free to ask them.'}, {'timestamp': [11.46, 17.02], 'text': ' However, please make sure that you avoid the questions on the list.'}]
-# pdb.set_trace()
 
 
 Instructions = """
@@ -147,6 +142,11 @@ Instructions = """
         Also upload the pdf file to summarize the text. (Optional)
         The model will return the transcription and timestamps of the audio.
 """
+
+# import pdb
+# pdb.set_trace()
+# x = transcribe_with_timestamps("/Users/kevingeng/GAVO_Lab/V001_L2_B119004_0056-0000.wav", True)
+# pdb.set_trace()
 
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
     gr.Markdown(Instructions)
@@ -166,15 +166,12 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 with gr.Accordion(open=False):
                     timestamps = gr.JSON(label="Timestamps")
     with gr.Column():
-        sentence_analysis_table = gr.DataFrame(label="Sentence Analysis", headers=["Transcription", "Audio"])
+        sentence_analysis_table.render()
         with gr.Row():
             transcrible_button = gr.Button("Transcribe")
             # ASR summary
             ASR_summary = [transcription, timestamps, sentence_analysis_table]
             transcrible_button.click(transcribe_with_timestamps, [input_audio, sentence_toggle], outputs=ASR_summary)
-            
-        with gr.Row():
-            analyze_button = gr.Button("Analyze")    
         
 # Launch the Gradio app
-demo.launch(share=False)        
+demo.launch(share=False, allowed_paths=["audio_slices"])
