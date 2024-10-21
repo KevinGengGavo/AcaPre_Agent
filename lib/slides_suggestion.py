@@ -91,7 +91,8 @@ def suggestion(path):
 
     res = client.chat.completions.create(
         model = "gpt-4o",
-        messages = _messages
+        messages = _messages,
+        temperature = 0
     )
 
     return res.choices[0].message.content
