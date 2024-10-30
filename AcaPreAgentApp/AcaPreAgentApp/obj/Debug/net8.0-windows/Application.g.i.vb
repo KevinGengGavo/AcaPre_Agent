@@ -46,7 +46,7 @@ Partial Public Class Application
     '''InitializeComponent
     '''</summary>
     <System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.7.0")>  _
+     System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.10.0")>  _
     Public Sub InitializeComponent()
         
         #ExternalSource("..\..\..\Application.xaml",5)
@@ -60,7 +60,7 @@ Partial Public Class Application
     '''</summary>
     <System.STAThreadAttribute(),  _
      System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.7.0")>  _
+     System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.10.0")>  _
     Public Shared Sub Main()
         Dim app As Application = New Application()
         app.InitializeComponent
