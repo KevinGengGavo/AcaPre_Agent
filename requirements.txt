@@ -3,3 +3,4 @@ gradio
 transformers
 gradio_client
 torchaudio
+evaluate
