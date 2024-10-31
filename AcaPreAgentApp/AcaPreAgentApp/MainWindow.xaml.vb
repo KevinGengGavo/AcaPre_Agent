@@ -2,6 +2,8 @@
 
 ' https://resanaplaza.com/2023/06/24/%E3%80%90%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E6%BA%80%E8%BC%89%E3%80%91c%E3%81%A7%E5%8B%95%E7%94%BB%E5%86%8D%E7%94%9F%E3%81%97%E3%82%88%E3%81%86%E3%82%88%EF%BC%81%EF%BC%88mediaelement%EF%BC%89/
 
+' https://vdlz.xyz/Csharp/Porpose/Editor/RichTextBoxEditor/RichTextBoxEditor09_ProgrammaticallyInput.html
+
 Class MainWindow
 
     Private moviepath As String
@@ -16,6 +18,8 @@ Class MainWindow
 
     Private sliderdrag As Boolean
 
+    Private pagetime As New List(Of Double)
+
 
     Private Sub LoadMovieButton_Click(sender As Object, e As RoutedEventArgs) Handles LoadMovieButton.Click
         Dim a = New Microsoft.Win32.OpenFileDialog()
@@ -26,7 +30,7 @@ Class MainWindow
             slider.Value = 0
             mediaElement.Play()
             mediaElement.Stop()
-            Do Until mediaElement.NaturalDuration.HasTimeSpan ' 再生中でないとこれがTrueにならない
+            Do Until mediaElement.NaturalDuration.HasTimeSpan ' 動画を読み込んでいないとこれがTrueにならない
 
             Loop
             slider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds
@@ -56,9 +60,20 @@ Class MainWindow
         slider.Value = 0
         sliderdrag = False
 
+        'Dim fd As New FlowDocument
+        'Dim par As New Paragraph
+        'Dim h As New Hyperlink
+        'Dim r As New Run
 
+        'r.Text = "test link 2"
+        'h.Name = "testlink2"
+        'h.NavigateUri = New Uri("https://example.com")
+        'AddHandler h.RequestNavigate, AddressOf Hyperlink_RequestNavigate
+        'h.Inlines.Add(r)
+        'par.Inlines.Add(h)
+        'fd.Blocks.Add(par)
+        'richTextBox.Document = fd
 
-        Dim foo = IO.Path.GetDirectoryName(Environment.CurrentDirectory & "\" & pyexepath)
         Timer1 = New Threading.DispatcherTimer With {
             .Interval = New TimeSpan(1000000) ' 100万=100ms
             }
@@ -71,33 +86,67 @@ Class MainWindow
         SetTimeLabel()
     End Sub
 
-    Private Sub Slider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles slider.ValueChanged
-        'If sliderdrag Then
-        '    SetTimeLabel()
-        'End If
-    End Sub
-
     Private Sub Ps_Exited(sender As Object, e As EventArgs)
         'プロセスが終了したときに実行される
         ps_test_running = False
         Dim ps = DirectCast(sender, Process)
         If ps IsNot Nothing Then
+            ps.WaitForExit()
             ps.Close()
             ps.Dispose()
         End If
-        MessageBox.Show("finished")
         Dispatcher.Invoke(
             Sub()
                 SaveButton.IsEnabled = True
+                EvalButton.IsEnabled = True
+                LoadMovieButton.IsEnabled = True
+
+                If pagetime.Count > 0 Then
+                    ' pagetimeの内容を反映
+                    Dim fd As New FlowDocument
+                    Dim par As New Paragraph
+
+                    For i As Integer = 0 To pagetime.Count - 1
+                        Dim ts = TimeSpan.FromSeconds(pagetime(i))
+                        Dim h As New Hyperlink
+                        Dim r As New Run With {
+                            .Text = "page" & (i + 1).ToString & " (" & ts.ToString("hh\:mm\:ss") & ")"
+                        }
+                        h.Name = "page" & (i + 1).ToString
+                        h.Tag = pagetime(i)
+                        h.NavigateUri = New Uri("https://example.com/")
+                        AddHandler h.RequestNavigate, AddressOf Hyperlink_RequestNavigate
+                        h.Inlines.Add(r)
+                        par.Inlines.Add(h)
+
+                        Dim r2 As New Run With {
+                            .Text = " "
+                        }
+                        par.Inlines.Add(r2)
+                    Next
+                    fd.Blocks.Add(par)
+                    richTextBox.Document = fd
+                End If
             End Sub
         )
+        MessageBox.Show("finished")
     End Sub
 
     Private Sub Ps_OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
+        ' スライド切り替わり時間のフォーマットは [0.0, 15.999831223628693, 39.199586497890294, 56.99939873417722, 77.59918143459916]
         Dispatcher.Invoke(
             Sub()
                 OutputTextBox.Text += e.Data & vbCrLf
                 OutputTextBox.ScrollToEnd()
+                If e.Data IsNot Nothing AndAlso e.Data.Length > 4 Then
+                    If e.Data.Substring(0, 5) = "[0.0," Then
+                        pagetime.Clear()
+                        Dim s = e.Data.Substring(1, e.Data.Length - 2).Split(","c)
+                        For i As Integer = 0 To s.Length - 1
+                            pagetime.Add(CDbl(s(i)))
+                        Next
+                    End If
+                End If
             End Sub
         )
     End Sub
@@ -117,6 +166,8 @@ Class MainWindow
         'StartPyProcess(ps_test, "run_eval.py videos\confident.mp4", ".\..\..\..\..\..\")
         StartPyProcess(ps_test, "run_eval.py " & moviepath, ".\..\..\..\..\..\")
         ps_test_running = True
+        EvalButton.IsEnabled = False
+        LoadMovieButton.IsEnabled = False
     End Sub
 
     Private Sub StartPyProcess(ps As Process, filename As String, wdir As String)
@@ -169,6 +220,17 @@ Class MainWindow
         EvalButton.IsEnabled = val
     End Sub
 
+    Private Sub Hyperlink_RequestNavigate(sender As Object, e As RequestNavigateEventArgs)
+        Dim h = DirectCast(sender, Hyperlink)
+        Try
+            Dim t = CDbl(h.Tag)
+            mediaElement.Position = TimeSpan.FromSeconds(t)
+        Catch ex As Exception
+
+        End Try
+        'MessageBox.Show(h.Name & vbCrLf & pagetime.Count)
+    End Sub
+
     Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
         Dim a = New Microsoft.Win32.SaveFileDialog()
         Dim result = a.ShowDialog()
@@ -176,4 +238,6 @@ Class MainWindow
 
         End If
     End Sub
+
+
 End Class

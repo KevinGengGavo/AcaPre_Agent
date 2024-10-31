@@ -22,8 +22,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "AcaPreAgentApp\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml",
+              "RelativeToolTip": "AcaPreAgentApp\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-31T07:35:05.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml.vb",
+              "RelativeDocumentMoniker": "AcaPreAgentApp\\MainWindow.xaml.vb",
+              "ToolTip": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml.vb",
+              "RelativeToolTip": "AcaPreAgentApp\\MainWindow.xaml.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-07-31T07:34:59.673Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -34,31 +58,6 @@
               "RelativeToolTip": "AcaPreAgentApp\\AcaPreAgentApp.vbproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
               "WhenOpened": "2024-10-20T14:14:44.695Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "AcaPreAgentApp\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml",
-              "RelativeToolTip": "AcaPreAgentApp\\MainWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-07-31T07:35:05.978Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MainWindow.xaml.vb",
-              "DocumentMoniker": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml.vb",
-              "RelativeDocumentMoniker": "AcaPreAgentApp\\MainWindow.xaml.vb",
-              "ToolTip": "C:\\Users\\E2333\\Documents\\GitHub\\AcaPre_Agent\\AcaPreAgentApp\\AcaPreAgentApp\\MainWindow.xaml.vb",
-              "RelativeToolTip": "AcaPreAgentApp\\MainWindow.xaml.vb",
-              "ViewState": "AgIAAIcAAAAAAAAAAAAAwFgAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-07-31T07:34:59.673Z",
-              "EditorCaption": ""
             }
           ]
         }
