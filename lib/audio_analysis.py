@@ -60,7 +60,7 @@ def make_video_into_gradio_audio(video_path):
         return
     
     # Export audio to a temporary file
-    audio_path = "temp_audio.wav"
+    audio_path = "./cache/temp_audio.wav"
     video_object.audio.write_audiofile(audio_path, fps=16000)
     
     # Load the audio file and process with librosa
@@ -72,9 +72,122 @@ def make_video_into_gradio_audio(video_path):
 
 sentence_analysis_table = gr.DataFrame(label="Sentence Analysis", headers=["Transcription", "Audio", "Start", "End"], datatype="markdown", wrap=True)
 
-def transcribe_with_timestamps(audio, sentence_analysis=False):
+# def integrate_video_and_audio_timestamp(video_timestamp, audio_timestamp_table):
+    
+#     '''
+#     Concat audio timestamp according to video timestamp
+#     args:
+#     video_timestamp: list of list, each list has 2 float, [start, end]
+#     audio_timestamp_table: list of list, ["transcription", "audio", "start", "end"]
+#     ---
+#     return:
+#     integrated_timestamp_table: list of list, ["transcription", "audio", "start", "end"]
+#     If video_timestamp is not equal to audio_timestamp_table, video ending time is always later than audio ending time,
+#     e.g. 
+#     video_timestamp = [[0.0, 1.0], [1.0, 3.0], [3.0, 10.0]]
+#     audio_timestamp_table = [{"transcription": "hello", "audio": "audio1.wav", "start": 0.0, "end": 0.5}, {"transcription": "world", "audio": "audio2.wav", "start": 0.5, "end": 1.5}, {"transcription": "world", "audio": "audio2.wav", "start": 3, "end": 4.5}]
+    
+#     result:
+#     integrated_timestamp_table =  [{"transcription": "hello", "audio": "audio1.wav", "start": 0.0, "end": 0.5}, {"transcription": "world", "audio": "audio2.wav", "start": 0.5, "end": 1.5}, {"transcription": "world", "audio": "audio2.wav", "start": 3, "end": 4.5}]
+#     '''
+#     integrated_timestamp_table = []
+#     audio_idx = 0
+#     # Iterate over video timestamp ranges
+#     for v_start, v_end in video_timestamp:
+#         while audio_idx < len(audio_timestamp_table):
+#             record_line = audio_timestamp_table[audio_idx]
+#             transcription, audio_file, a_start, a_end = audio_timestamp_table[audio_idx]
+
+#             # Check if the audio segment falls within the current video segment
+#             if a_start >= v_start and a_end <= v_end:
+#                 record_line.append([transcription, audio_file, a_start, a_end])
+#                 audio_idx += 1
+#             elif a_end > v_end:
+#                 break
+#             else:
+#                 # combine record_line in transcriptions, audio_clips and use the first a_start and last a_end
+                
+#                 audio_idx += 1  # Move to the next audio segment if current one is before video start
+
+#     return integrated_timestamp_table
+def integrate_video_and_audio_timestamp(video_timestamp, audio_timestamp_table):
+    integrated_timestamp_table = []
+    audio_idx = 0
+    video_idx = 0
+
+    # Iterate through both video and audio timestamps
+    while audio_idx < len(audio_timestamp_table):
+        if video_idx < len(video_timestamp):
+            v_start, v_end = video_timestamp[video_idx]
+            # round to integer
+            v_start = int(v_start)
+            v_end = int(v_end)
+        else:
+            # If no more video segments, add remaining audio directly
+            integrated_timestamp_table.append(audio_timestamp_table[audio_idx])
+            audio_idx += 1
+            continue
+
+        transcription, audio_file, a_start, a_end = audio_timestamp_table[audio_idx]
+
+        # Check if the audio segment falls within or overlaps the current video segment
+        if a_start < v_end and a_end > v_start:
+            merged_transcription = ""
+            merged_audio_files = []
+            merged_start = None
+            merged_end = None
+            audio_segments_in_video = []
+
+            # Collect all audio segments that overlap this video timestamp
+            while audio_idx < len(audio_timestamp_table):
+                transcription, audio_file, a_start, a_end = audio_timestamp_table[audio_idx]
+
+                # If the audio segment is within the video segment or overlaps it
+                if a_start < v_end and a_end > v_start:
+                    actual_start = max(a_start, v_start)
+                    actual_end = min(a_end, v_end)
+
+                    audio_segments_in_video.append([
+                        transcription,
+                        audio_file,
+                        actual_start,
+                        actual_end
+                    ])
+                    audio_idx += 1
+                else:
+                    break
+
+            # Merge the audio segments if there are multiple
+            if len(audio_segments_in_video) == 1:
+                integrated_timestamp_table.append(audio_segments_in_video[0])
+            else:
+                merged_transcription = " ".join(seg[0] for seg in audio_segments_in_video)
+                merged_audio_files = ", ".join(seg[1] for seg in audio_segments_in_video)
+                merged_start = audio_segments_in_video[0][2]  # Start of the first segment
+                merged_end = audio_segments_in_video[-1][3]   # End of the last segment
+
+                integrated_timestamp_table.append([
+                    merged_transcription.strip(),
+                    merged_audio_files,
+                    merged_start,
+                    merged_end
+                ])
+
+            video_idx += 1  # Move to the next video segment
+        elif a_end <= v_start:
+            # If the audio segment is entirely before the current video segment, add it as is
+            integrated_timestamp_table.append(audio_timestamp_table[audio_idx])
+            audio_idx += 1
+        else:
+            # Move to the next video segment if current audio is after this video segment
+            video_idx += 1
+
+    return integrated_timestamp_table
+
+def transcribe_with_timestamps(audio, sentence_analysis=False, integrate_with_video=False):
     # Use the pipeline to transcribe the audio with timestamps
     if type(audio) == gr.Video or str(audio).endswith(".mp4"):
+        video = audio
         audio = make_video_into_gradio_audio(audio)
     result = asr_pipeline(audio, return_timestamps="word")
     if sentence_analysis == False:
@@ -99,10 +212,19 @@ def transcribe_with_timestamps(audio, sentence_analysis=False):
         for item in sentence_dataframe:
             # item[1] = f"<audio controls><source src='{item[1]}' type='audio/wav'></audio>"
             item[1] = f"<audio src='/file={item[1]}' controls></audio>"
+
+        if integrate_with_video:
+            dataframe = integrate_video_and_audio_timestamp(extract_unique_frames(video, interval=1)[1], sentence_dataframe)
+            return result["text"], result["chunks"], dataframe
+        
         return result["text"], result["chunks"], sentence_dataframe
 
 
-# transcribe_with_timestamps("/Users/kevingeng/GAVO_Lab/AcaPre_Agent/video/confident.mp4", True)
+# x = extract_unique_frames("/Users/kevingeng/GAVO_Lab/AcaPre_Agent/video/confident.mp4")[1]
+# y = transcribe_with_timestamps("/Users/kevingeng/GAVO_Lab/AcaPre_Agent/video/confident.mp4", True)[2]
+
+# z = integrate_video_and_audio_timestamp(x, y)
+# import pdb; pdb.set_trace()
 
 # def transcribe_with_video_timestamps(video, sentence_analysis=False):
 #     '''

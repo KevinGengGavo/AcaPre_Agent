@@ -18,7 +18,7 @@ def frame_diff(frame1, frame2):
     
     return np.sum(thresh) / thresh.size
 
-def extract_unique_frames(video_path, interval=10):
+def extract_unique_frames(video_path, interval=1):
     video = cv2.VideoCapture(video_path)
     fps = video.get(cv2.CAP_PROP_FPS)
     frame_interval = int(fps * interval)
@@ -48,6 +48,8 @@ def extract_unique_frames(video_path, interval=10):
             print(f"類似フレームをスキップしました（{i/fps:.1f}秒）")
     # timestamp into [start, end] format
     time_stamps = [[time_stamps[i], time_stamps[i+1]] for i in range(len(time_stamps)-1)]
+    # round timestamps to integer
+    time_stamps = [[int(start), int(end)] for start, end in time_stamps]
     return unique_frames, time_stamps
 
 def resize_image(image, max_size=1000):

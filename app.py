@@ -20,6 +20,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 unique_frames = gr.Gallery(label="Unique Frames", columns=5, height=200)
 unique_video_timestamps = gr.List(label="Video Timestamps", height=200)
 sentence_analysis_table = gr.DataFrame(label="Sentence Analysis", headers=["Transcription", "Audio", "Start", "End"], datatype="markdown", wrap=True, height=200)
+# integrate_analysis_table = gr.DataFrame(label="Video Analysis", headers=["Transcription", "Audio", "Start", "End"], datatype="markdown", wrap=True, height=200)
 
 suggestion_box = gr.Textbox(label="Suggestion")
 
@@ -42,7 +43,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 generate_overall_suggestion = gr.Button("Generate Overall Suggestion")
                 # make input_video into input_audio (gradio.audio)
             with gr.Row():
-                sentence_toggle =gr.Checkbox(label="Sentence Analysis", value=True)
+                sentence_toggle = gr.Checkbox(label="Sentence Analysis", value=True, interactive=True)
+                integrate_toggle = gr.Checkbox(label="Integrate Analysis", value=True, interactive=True)
     with gr.Column():
         with gr.Row():
             unique_frames.render()
@@ -54,14 +56,17 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 timestamps = gr.JSON(label="Timestamps")
         with gr.Row():
             suggestion_box.render()
+        
+            
     
     # ASR summary
     ASR_summary = [transcription, timestamps, sentence_analysis_table]
-    transcrible_button.click(transcribe_with_timestamps, [input_video, sentence_toggle], outputs=ASR_summary)
+    transcrible_button.click(transcribe_with_timestamps, [input_video, sentence_toggle, integrate_toggle], outputs=ASR_summary)
     # Video summary
     get_video_timestamps.click(extract_unique_frames, input_video, outputs=[unique_frames, unique_video_timestamps])
     # Overall suggestion
     generate_overall_suggestion.click(suggestion, input_pdf, outputs=suggestion_box)
+    
             
 # Launch the Gradio app
-demo.launch(share=False, allowed_paths=["audio_slices", "output", "video"])
+demo.launch(share=False, allowed_paths=["audio_slices", "output", "video", "cache"])
