@@ -6,35 +6,17 @@ import torch
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 import torchaudio
 import librosa
+import sys
+sys.path.append("./lib")
+# add lib to sys path
+from video_split import extract_unique_frames
+from moviepy.editor import VideoFileClip
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # torch mbp
 
 # Initialize the Whisper model pipeline
 asr_pipeline = pipeline("automatic-speech-recognition", model="openai/whisper-base", device=device)
-
-# # for filler
-# # load model and processor
-
-# from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
-
-# device = "cuda:0" if torch.cuda.is_available() else "cpu"
-# torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-
-# model_id = "nyrahealth/CrisperWhisper"
-
-# model = AutoModelForSpeechSeq2Seq.from_pretrained(
-#     model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
-# )
-# model.to(device)
-
-# processor = AutoProcessor.from_pretrained(model_id)
-
-# # Use a pipeline as a high-level helper
-# from transformers import pipeline
-
-# pipe = pipeline("automatic-speech-recognition", model="nyrahealth/CrisperWhisper", device=device, return_timestamps=True)
-
 
 def wordts2sentencets(text, word_ts):
     '''
@@ -68,10 +50,32 @@ def get_audio_slice(audio, start, end):
     audio_slice = librosa.load(audio, sr=16000, offset=start, duration=end-start)
     return audio_slice
 
+def make_video_into_gradio_audio(video_path):
+    # Load the video
+    video_object = VideoFileClip(video_path)
+    
+    # Ensure there is an audio track
+    if video_object.audio is None:
+        print("No audio track found in video.")
+        return
+    
+    # Export audio to a temporary file
+    audio_path = "temp_audio.wav"
+    video_object.audio.write_audiofile(audio_path, fps=16000)
+    
+    # Load the audio file and process with librosa
+    y, sr = librosa.load(audio_path, sr=16000)
+    duration = librosa.get_duration(y=y, sr=sr)
+    
+    print(f"Audio duration: {duration:.2f} seconds")
+    return audio_path
+
 sentence_analysis_table = gr.DataFrame(label="Sentence Analysis", headers=["Transcription", "Audio", "Start", "End"], datatype="markdown", wrap=True)
 
 def transcribe_with_timestamps(audio, sentence_analysis=False):
     # Use the pipeline to transcribe the audio with timestamps
+    if type(audio) == gr.Video or str(audio).endswith(".mp4"):
+        audio = make_video_into_gradio_audio(audio)
     result = asr_pipeline(audio, return_timestamps="word")
     if sentence_analysis == False:
         return result["text"], result["chunks"], None
@@ -96,6 +100,24 @@ def transcribe_with_timestamps(audio, sentence_analysis=False):
             # item[1] = f"<audio controls><source src='{item[1]}' type='audio/wav'></audio>"
             item[1] = f"<audio src='/file={item[1]}' controls></audio>"
         return result["text"], result["chunks"], sentence_dataframe
+
+
+# transcribe_with_timestamps("/Users/kevingeng/GAVO_Lab/AcaPre_Agent/video/confident.mp4", True)
+
+# def transcribe_with_video_timestamps(video, sentence_analysis=False):
+#     '''
+#     video: str, path to video file
+#     ---
+#     return:
+#     unique_frames: list of np.array, unique frames
+#     unique_video_timestamps: list of list, each list has 2 float, [start, end]
+#     '''
+#     unique_frames, unique_video_timestamps = extract_unique_frames(video)
+#     # get audio from video into numpy array
+#     video_object = VideoFileClip(video)
+#     import pdb; pdb.set_trace()
+#     audio = video_object.audio.to_soundarray(fps=16000)
+
 
 # import os
 # import sys

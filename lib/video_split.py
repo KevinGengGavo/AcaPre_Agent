@@ -46,7 +46,8 @@ def extract_unique_frames(video_path, interval=10):
             prev_frame = curr_frame
         else:
             print(f"類似フレームをスキップしました（{i/fps:.1f}秒）")
-    
+    # timestamp into [start, end] format
+    time_stamps = [[time_stamps[i], time_stamps[i+1]] for i in range(len(time_stamps)-1)]
     return unique_frames, time_stamps
 
 def resize_image(image, max_size=1000):
