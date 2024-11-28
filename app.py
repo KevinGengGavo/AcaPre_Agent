@@ -37,10 +37,9 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Column():
             with gr.Row():
                 input_video = gr.Video(label="Upload Video")
-                input_pdf = gr.File(label="Upload PDF")
+                input_pdf = gr.File(label="Upload PDF", visible=False)
                 get_video_timestamps = gr.Button("Get Video Timestamps")
                 transcrible_button = gr.Button("Transcribe")
-                framestopdf_button = gr.Button("Frames to PDF")
                 generate_overall_suggestion = gr.Button("Generate Overall Suggestion")
                 # make input_video into input_audio (gradio.audio)
             with gr.Row():
