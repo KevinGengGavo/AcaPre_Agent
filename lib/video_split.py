@@ -50,8 +50,14 @@ def extract_unique_frames(video_path, interval=1):
     time_stamps = [[time_stamps[i], time_stamps[i+1]] for i in range(len(time_stamps)-1)]
     # round timestamps to integer
     time_stamps = [[int(start), int(end)] for start, end in time_stamps]
+    
     return unique_frames, time_stamps
 
+def extract_unique_frames_create_pdf(video_path, interval=1):
+    unique_frames, time_stamps = extract_unique_frames(video_path=video_path, interval=interval)
+    create_pdf(unique_frames, "output/slides.pdf")
+    return unique_frames, time_stamps, "output/slides.pdf"
+    
 def resize_image(image, max_size=1000):
     h, w = image.shape[:2]
     if max(h, w) > max_size:

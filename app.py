@@ -5,7 +5,7 @@ import torch
 
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from lib.audio_analysis import transcribe_with_timestamps
-from lib.video_split import extract_unique_frames
+from lib.video_split import extract_unique_frames, create_pdf, extract_unique_frames_create_pdf
 from lib.slides_suggestion import suggestion
 
 # get gpu device, if cuda available, then mps, last cpu
@@ -40,6 +40,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
                 input_pdf = gr.File(label="Upload PDF")
                 get_video_timestamps = gr.Button("Get Video Timestamps")
                 transcrible_button = gr.Button("Transcribe")
+                framestopdf_button = gr.Button("Frames to PDF")
                 generate_overall_suggestion = gr.Button("Generate Overall Suggestion")
                 # make input_video into input_audio (gradio.audio)
             with gr.Row():
@@ -57,13 +58,12 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Row():
             suggestion_box.render()
         
-            
     
     # ASR summary
     ASR_summary = [transcription, timestamps, sentence_analysis_table]
     transcrible_button.click(transcribe_with_timestamps, [input_video, sentence_toggle, integrate_toggle], outputs=ASR_summary)
     # Video summary
-    get_video_timestamps.click(extract_unique_frames, input_video, outputs=[unique_frames, unique_video_timestamps])
+    get_video_timestamps.click(extract_unique_frames_create_pdf, input_video, outputs=[unique_frames, unique_video_timestamps, input_pdf])
     # Overall suggestion
     generate_overall_suggestion.click(suggestion, input_pdf, outputs=suggestion_box)
     
