@@ -4,4 +4,4 @@ transformers
 gradio_client
 torchaudio
 evaluate
-moviepy
+moviepy=1.0.3
