@@ -44,11 +44,14 @@ def extract_unique_frames(video_path, interval=1):
             frame_count += 1
             prev_frame = curr_frame
         else:
-            print(f"類似フレームをスキップしました（{i/fps:.1f}秒）")
+            pass
+            #print(f"類似フレームをスキップしました（{i/fps:.1f}秒）")
     # timestamp into [start, end] format
-    time_stamps = [[time_stamps[i], time_stamps[i+1]] for i in range(len(time_stamps)-1)]
+    #time_stamps = [[time_stamps[i], time_stamps[i+1]] for i in range(len(time_stamps)-1)]
     # round timestamps to integer
-    time_stamps = [[int(start), int(end)] for start, end in time_stamps]
+    #time_stamps = [[int(start), int(end)] for start, end in time_stamps]
+
+    time_stamps.append(total_frames/fps)
     
     return unique_frames, time_stamps
 
