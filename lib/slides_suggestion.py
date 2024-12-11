@@ -34,7 +34,7 @@ def make_speech_split(path, time_stamps):
     flame_filters = []
     sentences = [0]
 
-    res_txt = []
+    res_txt = ""
 
     for t in time_stamps[1:]:
         _filter = np.where(start < t, 1, 0)
@@ -43,7 +43,8 @@ def make_speech_split(path, time_stamps):
 
     for i, f in enumerate(flame_filters):
         _res = f[sentences[i]:]
-        res_txt.append(''.join(_res))
+
+        res_txt += "slide number " + str(i+1) + ": " + ''.join(_res) + "\n"
 
     return res_txt
 
@@ -62,7 +63,7 @@ def trans2marp(path):
                 "content":[
                     {
                         "type": "text",
-                        "text": "渡す画像セットに対して、それをmarpに変換するようなテキストを返信してください。"
+                        "text": "make marp stype text from each input images."
                     }
                 ]
         } 
@@ -89,7 +90,7 @@ def trans2marp(path):
 
     return res.choices[0].message.content
 
-def suggestion(path):
+def suggestion(path, speech):
     load_dotenv()
 
     client = OpenAI(
@@ -104,11 +105,15 @@ def suggestion(path):
                 "content":[
                     {
                         "type": "text",
-                        "text": "あなたは、スライドのテーマに関して見識の深い教授です。まずスライド全体の要約をしてください。加えて、以下のmarpテキストに対して、論文発表を想定してスライド同士の関係から議論の抜け漏れがないか確認してください。情報が足りない場合には、スライド何枚目にどんな情報を追加するべきか提案してください。In English Please"
+                        "text": "You are a professor with insight on the subject of slides. Please do the following step-by-step. First, summarize the entire slide. Next, compare the slide summaries with the speech data for each slide to identify any discrepancies. Finally, check the marp text to see if there are any omissions in the discussion based on the relationship between the slides as if you were presenting a paper, and suggest what information should be added on what slide, based on the speech data and the slide data.\n"
                     },
                     {
                         "type": "text",
-                        "text": marp
+                        "text": "This is speech data: \n" + speech + "\n"
+                    },
+                    {
+                        "type": "text",
+                        "text": "This is slides data: \n" + marp
                     }
                 ]
         }
