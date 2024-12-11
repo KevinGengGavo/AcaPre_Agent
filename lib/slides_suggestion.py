@@ -3,7 +3,9 @@ import openai
 from openai import OpenAI
 from dotenv import load_dotenv
 from pdf2image import convert_from_path
+from . import audio_analysis
 import os
+import numpy as np
 
 #画像をBase64形式に変換する
 def encode_image(image_path):
@@ -21,6 +23,29 @@ def pdf_to_image(path):
         imgs64.append(_img64)
 
     return imgs64
+
+def make_speech_split(path, time_stamps):
+    txt, chunk, _ = audio_analysis.transcribe_with_timestamps(path)
+    data = audio_analysis.wordts2sentencets(txt, chunk)
+
+    start = np.array([e["timestamp"][0] for e in data])
+    word = np.array([e["text"] for e in data])
+
+    flame_filters = []
+    sentences = [0]
+
+    res_txt = []
+
+    for t in time_stamps[1:]:
+        _filter = np.where(start < t, 1, 0)
+        sentences.append(np.sum(_filter))
+        flame_filters.append(np.where(_filter, word, ""))
+
+    for i, f in enumerate(flame_filters):
+        _res = f[sentences[i]:]
+        res_txt.append(''.join(_res))
+
+    return res_txt
 
 def trans2marp(path):
     load_dotenv()
