@@ -20,6 +20,8 @@ Class MainWindow
 
     Private pagetime As New List(Of Double)
 
+    Private IsSuggestionStarted As Boolean
+
 
     Private Sub LoadMovieButton_Click(sender As Object, e As RoutedEventArgs) Handles LoadMovieButton.Click
         Dim a = New Microsoft.Win32.OpenFileDialog()
@@ -100,13 +102,15 @@ Class MainWindow
                 SaveButton.IsEnabled = True
                 EvalButton.IsEnabled = True
                 LoadMovieButton.IsEnabled = True
+                EvalButton.Content = "Run Evaluation"
+                Pb1.IsIndeterminate = False
 
                 If pagetime.Count > 0 Then
                     ' pagetimeの内容を反映
                     Dim fd As New FlowDocument
                     Dim par As New Paragraph
 
-                    For i As Integer = 0 To pagetime.Count - 1
+                    For i As Integer = 0 To pagetime.Count - 2
                         Dim ts = TimeSpan.FromSeconds(pagetime(i))
                         Dim h As New Hyperlink
                         Dim r As New Run With {
@@ -127,25 +131,31 @@ Class MainWindow
                     fd.Blocks.Add(par)
                     richTextBox.Document = fd
                 End If
+
+
             End Sub
         )
         MessageBox.Show("finished")
     End Sub
 
     Private Sub Ps_OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
-        ' スライド切り替わり時間のフォーマットは [0.0, 15.999831223628693, 39.199586497890294, 56.99939873417722, 77.59918143459916]
+        ' スライド切り替わり時間のフォーマットは Time stamps: [0.0, 15.999831223628693, 39.199586497890294, 56.99939873417722, 77.59918143459916]
         Dispatcher.Invoke(
             Sub()
                 OutputTextBox.Text += e.Data & vbCrLf
                 OutputTextBox.ScrollToEnd()
-                If e.Data IsNot Nothing AndAlso e.Data.Length > 4 Then
-                    If e.Data.Substring(0, 5) = "[0.0," Then
-                        pagetime.Clear()
-                        Dim s = e.Data.Substring(1, e.Data.Length - 2).Split(","c)
-                        For i As Integer = 0 To s.Length - 1
-                            pagetime.Add(CDbl(s(i)))
-                        Next
-                    End If
+                If IsSuggestionStarted Then
+                    SuggestionTextBox.Text += e.Data & vbCrLf
+                ElseIf e.Data.StartsWith("Time stamps: [") Then
+                    pagetime.Clear()
+                    Dim s = e.Data.Substring(14, e.Data.Length - 15).Split(","c)
+                    For i As Integer = 0 To s.Length - 1
+                        pagetime.Add(CDbl(s(i)))
+                    Next
+                ElseIf e.Data.StartsWith("slide number ") Then
+                    TranscriptTextBox.Text += e.Data & vbCrLf
+                ElseIf e.Data.StartsWith("AI Suggestion Result:") Then
+                    IsSuggestionStarted = True
                 End If
             End Sub
         )
@@ -164,10 +174,17 @@ Class MainWindow
         ' https://qiita.com/kktkhs1936/items/a3ea2a25d1c91fff1f52
         'StartPyProcess(ps_test, "test.py videos\confident.mp4", ".\..\..\..\..\..\")
         'StartPyProcess(ps_test, "run_eval.py videos\confident.mp4", ".\..\..\..\..\..\")
-        StartPyProcess(ps_test, "run_eval.py " & moviepath, ".\..\..\..\..\..\")
+        StartPyProcess(ps_test, "run_eval_wpf.py " & moviepath, ".\..\..\..\..\..\")
         ps_test_running = True
         EvalButton.IsEnabled = False
         LoadMovieButton.IsEnabled = False
+        Pb1.IsIndeterminate = True
+        EvalButton.Content = "Evaluating..."
+        OutputTextBox.Clear()
+        TranscriptTextBox.Clear()
+        SuggestionTextBox.Clear()
+        richTextBox.Document = New FlowDocument()
+        IsSuggestionStarted = False
     End Sub
 
     Private Sub StartPyProcess(ps As Process, filename As String, wdir As String)
@@ -207,13 +224,13 @@ Class MainWindow
         End If
     End Sub
 
-    Private Sub ZeroButton_Click(sender As Object, e As RoutedEventArgs) Handles ZeroButton.Click
-        mediaElement.Position = TimeSpan.FromMilliseconds(0)
-    End Sub
+    'Private Sub ZeroButton_Click(sender As Object, e As RoutedEventArgs) Handles ZeroButton.Click
+    '    mediaElement.Position = TimeSpan.FromMilliseconds(0)
+    'End Sub
 
     Private Sub ChangeControlIsEnabled(val As Boolean)
         slider.IsEnabled = val
-        ZeroButton.IsEnabled = val
+        'ZeroButton.IsEnabled = val
         PlayButton.IsEnabled = val
         PauseButton.IsEnabled = val
         StopButton.IsEnabled = val
@@ -233,9 +250,12 @@ Class MainWindow
 
     Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
         Dim a = New Microsoft.Win32.SaveFileDialog()
+        a.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"
         Dim result = a.ShowDialog()
         If result Then
-
+            Using w As New IO.StreamWriter(a.FileName, False, Text.Encoding.UTF8)
+                w.Write(SuggestionTextBox.Text)
+            End Using
         End If
     End Sub
 

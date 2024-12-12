@@ -12,34 +12,40 @@
             <RowDefinition Height="300"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <MediaElement x:Name="mediaElement" Width="800" Height="300" Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="9" LoadedBehavior="Manual" UnloadedBehavior="Manual"/>
-        <Border BorderBrush="Black" BorderThickness="0,1,0,1" Grid.Row="1" Grid.ColumnSpan="9" />
+        <MediaElement x:Name="mediaElement" Width="800" Height="300" Grid.Row="0" Grid.RowSpan="1" Grid.ColumnSpan="7" LoadedBehavior="Manual" UnloadedBehavior="Manual"/>
+        <Border BorderBrush="Black" BorderThickness="0,1,0,1" Grid.Row="1" Grid.ColumnSpan="7" />
 
+        <Slider x:Name="slider" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Height="20" IsEnabled="False"/>
+        <Label x:Name="TimeLabel" Grid.Row="1" Grid.Column="0" Content="00:00:00 / 00:00:00" HorizontalContentAlignment="Right" />
+        
         <Button x:Name="LoadMovieButton" Content="Load Movie" Grid.Row="2" Grid.Column="0" Width="80" Height="40" Margin="12,5,12,0" VerticalAlignment="Top"/>
-        <Button x:Name="button2" Content="Start Record" Grid.Row="2" Grid.Column="1" Width="80" Height="40" Margin="5,5,5,5" Visibility="Hidden"/>
+        <!--<Button x:Name="button2" Content="Start Record" Grid.Row="2" Grid.Column="1" Width="80" Height="40" Margin="5,5,5,5" Visibility="Hidden"/>
         <Button x:Name="button3" Content="Stop Record" Grid.Row="2" Grid.Column="2" Width="80" Height="40" Margin="5,5,5,5" Visibility="Hidden"/>
-        <Button x:Name="ZeroButton" Content="|◀" Grid.Row="2" Grid.Column="3" Width="40" Height="40" Margin="5,5,5,5" Visibility="Hidden"/>
-        <Button x:Name="PlayButton" Content="▶" Grid.Row="2" Grid.Column="4" Width="40" Height="40" Margin="11,5,11,0" VerticalAlignment="Top"/>
-        <Button x:Name="PauseButton" Content="| |" Grid.Row="2" Grid.Column="5" Width="40" Height="40" Margin="5,5,5,5"/>
-        <Button x:Name="StopButton" Content="■" Grid.Row="2" Grid.Column="6" Width="40" Height="40" Margin="5,5,5,5"/>
-        <Button x:Name="EvalButton" Content="Run Evaluation" Grid.Row="2" Grid.Column="7" Width="100" Height="40" Margin="5,5,5,5"/>
-        <Button x:Name="SaveButton" Content="Save Result" Grid.Row="2" Grid.Column="8" Width="80" Height="40" Margin="5,5,5,5"/>
-        <RichTextBox x:Name="richTextBox" Width="800" Grid.Row="3" Grid.ColumnSpan="9" IsReadOnly="True" IsDocumentEnabled="True">
+        <Button x:Name="ZeroButton" Content="|◀" Grid.Row="2" Grid.Column="3" Width="40" Height="40" Margin="5,5,5,5" Visibility="Hidden"/>-->
+        <Button x:Name="PlayButton" Content="▶" Grid.Row="2" Grid.Column="1" Width="40" Height="40" Margin="11,5,11,0" VerticalAlignment="Top"/>
+        <Button x:Name="PauseButton" Content="| |" Grid.Row="2" Grid.Column="2" Width="40" Height="40" Margin="5,5,5,5"/>
+        <Button x:Name="StopButton" Content="■" Grid.Row="2" Grid.Column="3" Width="40" Height="40" Margin="5,5,5,5"/>
+        <Button x:Name="EvalButton" Content="Run Evaluation" Grid.Row="2" Grid.Column="4" Width="100" Height="40" Margin="5,5,5,5"/>
+        <ProgressBar x:Name="Pb1" Grid.Row="2" Grid.Column="5" Height="20" Margin="5,5,5,5" Width="100"/>
+        <Button x:Name="SaveButton" Content="Save Result" Grid.Row="2" Grid.Column="6" Width="80" Height="40" Margin="5,5,5,5"/>
+
+        <Border BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="3" Grid.ColumnSpan="7" />
+        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="1" Content="Jump to..." HorizontalContentAlignment="Right" />
+        <RichTextBox x:Name="richTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" IsReadOnly="True" IsDocumentEnabled="True" Margin="5,5,5,5">
             <FlowDocument>
                 <Paragraph>
                     <!--<Run Text="01:00-01:30 Improper description. Please try to say: ***"/>-->
@@ -50,11 +56,14 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Slider x:Name="slider" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Height="20" IsEnabled="False"/>
-        <Label x:Name="TimeLabel" Grid.Row="1" Grid.Column="0" Content="00:00:00 / 00:00:00" HorizontalContentAlignment="Right" />
-        <TextBox x:Name="OutputTextBox" Grid.ColumnSpan="9" Grid.Row="4" TextWrapping="Wrap" Text="" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" Margin="5,5,5,5"/>
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Evaluator Raw Output" HorizontalContentAlignment="Center" />
+        <TextBox x:Name="OutputTextBox" Grid.ColumnSpan="2" Grid.Row="5" TextWrapping="Wrap" Text="" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" Margin="5,5,5,5"/>
 
 
+        <Label Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="3" Content="Generated Transcript" HorizontalContentAlignment="Center" />
+        <TextBox x:Name="TranscriptTextBox" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="5" TextWrapping="Wrap" Text="" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" Margin="5,5,5,5"/>
+        <Label Grid.Row="4" Grid.Column="5" Grid.ColumnSpan="2" Content="AI Suggestion" HorizontalContentAlignment="Center" />
+        <TextBox x:Name="SuggestionTextBox" Grid.Column="5" Grid.ColumnSpan="2" Grid.Row="5" TextWrapping="Wrap" Text="" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" IsReadOnly="True" Margin="5,5,5,5"/>
     </Grid>
     
 </Window>
