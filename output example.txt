@@ -1,0 +1,100 @@
+1枚目のフレームを保存しました（0.0秒）
+2枚目のフレームを保存しました（16.0秒）
+3枚目のフレームを保存しました（39.2秒）
+4枚目のフレームを保存しました（57.0秒）
+5枚目のフレームを保存しました（77.6秒）
+Time stamps: [0.0, 15.999831223628693, 39.199586497890294, 56.99939873417722, 77.59918143459916, 94.799]
+MoviePy - Writing audio in ./cache/temp_audio.wav
+
+chunk:   0%|          | 0/760 [00:00<?, ?it/s, now=None]
+chunk:   0%|          | 3/760 [00:00<00:29, 25.72it/s, now=None]
+chunk:  15%|#5        | 114/760 [00:00<00:01, 592.07it/s, now=None]
+chunk:  25%|##5       | 190/760 [00:00<00:00, 636.26it/s, now=None]
+chunk:  35%|###5      | 266/760 [00:00<00:00, 634.00it/s, now=None]
+chunk:  45%|####5     | 342/760 [00:00<00:00, 643.77it/s, now=None]
+chunk:  54%|#####3    | 407/760 [00:00<00:00, 643.53it/s, now=None]
+chunk:  62%|######2   | 475/760 [00:00<00:00, 635.65it/s, now=None]
+chunk:  72%|#######2  | 551/760 [00:00<00:00, 645.08it/s, now=None]
+chunk:  82%|########2 | 627/760 [00:01<00:00, 660.49it/s, now=None]
+chunk:  92%|#########2| 703/760 [00:01<00:00, 657.12it/s, now=None]
+                                                                   
+MoviePy - Done.
+Audio duration: 94.90 seconds
+Due to a bug fix in https://github.com/huggingface/transformers/pull/28687 transcription using a multilingual Whisper will default to language detection followed by transcription instead of translation to English.This might be a breaking change for your use case. If you want to instead always translate your audio to English, make sure to pass `language='en'`.
+Passing a tuple of `past_key_values` is deprecated and will be removed in Transformers v4.43.0. You should pass an instance of `EncoderDecoderCache` instead, e.g. `past_key_values=EncoderDecoderCache.from_legacy_cache(past_key_values)`.
+WhisperModel is using WhisperSdpaAttention, but `torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True` or `layer_head_mask` not None. Falling back to the manual attention implementation, but specifying the manual implementation will be required from Transformers version v5.0.0 onwards. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+From v4.47 onwards, when a model cache is to be returned, `generate` will return a `Cache` instance instead by default (as opposed to the legacy tuple of tuples format). If you want to keep returning the legacy format, please set `return_legacy_cache=True`.
+slide number 1:  Hello, I'm Srinosou from the University of Tokyo and the title is Fundamental Resumment of the Higurant characteristics of a perceived moral deep device to a major advantage of the Higurant for evaluating real detection control performance.
+slide number 2:  Rappable between the webbeams is a social problem and automatic training operation system is proposed to deal with this problem. However, train has strict subject pressure restriction due to the platform door as shown in figure and has difficult control-related characteristics, therefore precise control of the growth in mass-vigilup and demand for control of the growth in test bench is increasing.
+slide number 3:  For testing train control of the growth in developed rural existing, which will re-intraction of train, our system can control max adhesion force in other words, 30-4-by controlling pressing force between the blade and wheel via the motor thrust.
+slide number 4:  This is a result of which I meant between slip speed and the Higgin Force. Like actual terrain, the adhesion force takes maximum body at sudden slip speed and adhesion force decreases at high slip speed. Also, it is proved that the maximum adhesion force can be controlled via linear motor thrust.
+slide number 5:  In the future, we will try evaluation of ant-sleep technology and simulation of whole twin-running which includes acceleration, costing, braking and stopping potential control.
+
+PDFファイル 'output/slides.pdf' を作成しました。
+AI Suggestion Result:
+### Step 1: Summarize the Entire Slide
+
+1. **Slide 1: Title Slide**
+   - Title: Fundamental Measurement of Adhesion Characteristics of a Scaled Roller Rig Device
+   - Author: UENO, So from The University of Tokyo
+   - Contact: s.ueno@ctl.t.u-tokyo.ac.jp
+
+2. **Slide 2: Introduction**
+   - Background: Issues like lack of train drivers and the need for automatic train operation.
+   - Problem: Strict stopping position restrictions and control-related characteristics such as slipperiness and deadtime.
+   - Need for precise control technology and a test bench for control technology.
+
+3. **Slide 3: Proposed Roller Rig System**
+   - Simulates wheel-rail traction of trains using a roller rig.
+   - Can control maximum adhesion force by adjusting linear motor thrust.
+
+4. **Slide 4: System Characteristics Measurement**
+   - Simulates adhesion characteristics of actual trains.
+   - Maximum adhesion force is controllable via linear motor thrust.
+
+5. **Slide 5: Future Work**
+   - Plans to evaluate anti-slip technology.
+   - Simulate entire train operations including acceleration, coasting, braking, and stopping position control.
+
+### Step 2: Compare Slide Summaries with Speech Data
+
+1. **Slide 1:**
+   - Speech: Introduction by Srinosou, mentions the title and the focus on evaluating real detection control performance.
+   - Discrepancy: The speech introduces the speaker as Srinosou, while the slide lists UENO, So. This could be a simple name variation or a mistake.
+
+2. **Slide 2:**
+   - Speech: Discusses social problems and the need for automatic train operation systems due to platform door restrictions.
+   - Discrepancy: The speech emphasizes social problems and platform door restrictions, which are not explicitly mentioned in the slide.
+
+3. **Slide 3:**
+   - Speech: Describes the system's ability to control max adhesion force by controlling the pressing force between the blade and wheel.
+   - Discrepancy: The speech mentions "blade and wheel," while the slide refers to "rail and wheel."
+
+4. **Slide 4:**
+   - Speech: Discusses the relationship between slip speed and adhesion force, and the control of maximum adhesion force.
+   - Discrepancy: No major discrepancies; both focus on adhesion force control.
+
+5. **Slide 5:**
+   - Speech: Mentions future evaluation of anti-slip technology and simulation of train operations.
+   - Discrepancy: No major discrepancies; both align on future work.
+
+### Step 3: Check Marp Text for Omissions and Suggest Additions
+
+1. **Slide 1:**
+   - Suggestion: Clarify the speaker's name if Srinosou is an alias or a mistake. Ensure consistency between the slide and speech.
+
+2. **Slide 2:**
+   - Suggestion: Add details about social problems and platform door restrictions as mentioned in the speech to provide a more comprehensive background.
+
+3. **Slide 3:**
+   - Suggestion: Clarify the terminology used for "blade and wheel" versus "rail and wheel" to avoid confusion.
+
+4. **Slide 4:**
+   - Suggestion: No additional information needed; the slide and speech are consistent.
+
+5. **Slide 5:**
+   - Suggestion: No additional information needed; the slide and speech are consistent.
+
+By addressing these discrepancies and omissions, the presentation can be more cohesive and informative, ensuring that both the slides and speech data align effectively.
+
+

@@ -1,0 +1,66 @@
+﻿Let's go through the steps as requested:
+
+### Step 1: Summarize the Slides
+
+1. **Slide 1: Title Slide**
+   - Title: Fundamental Measurement of Adhesion Characteristics of a Scaled Roller Rig Device
+   - Author: UENO, So from the University of Tokyo
+   - Focus: Emulating fast changes in adhesion for evaluating railway traction control performance.
+
+2. **Slide 2: Introduction**
+   - Background: Issues like lack of train drivers and the need for automatic train operation.
+   - Problem: Strict stopping position restrictions and control-related characteristics such as slipperiness and deadtime.
+   - Need: Precise control technology and a test bench for control technology.
+
+3. **Slide 3: Proposed Roller Rig System**
+   - Description: Simulates wheel-rail traction using a roller rig.
+   - Functionality: Controls maximum adhesion force by adjusting the linear motor thrust.
+
+4. **Slide 4: System Characteristics Measurement**
+   - Focus: Simulating adhesion characteristics similar to actual trains.
+   - Key Point: Maximum adhesion force can be controlled via linear motor thrust.
+
+5. **Slide 5: Future Work**
+   - Goals: Evaluate anti-slip technology and simulate complete train operations including acceleration, coasting, braking, and stopping.
+
+### Step 2: Compare Slide Summaries with Speech Data
+
+1. **Slide 1:**
+   - Speech: Introduction by Srinosou, mentioning the title and focus on evaluating real detection control performance.
+   - Discrepancy: The speech mentions "Higurant characteristics" and "perceived moral deep device," which are not present in the slide. This could be a mispronunciation or error in the speech.
+
+2. **Slide 2:**
+   - Speech: Discusses social problems and automatic train operation systems, with emphasis on control challenges due to platform doors.
+   - Discrepancy: The speech adds details about platform doors not explicitly mentioned in the slide.
+
+3. **Slide 3:**
+   - Speech: Describes the system's ability to control max adhesion force by adjusting the pressing force between the blade and wheel.
+   - Discrepancy: The speech uses "blade and wheel" instead of "rail and wheel," which might be a misstatement.
+
+4. **Slide 4:**
+   - Speech: Discusses the relationship between slip speed and adhesion force, and confirms control via linear motor thrust.
+   - Discrepancy: The speech provides more detail about slip speed and adhesion force dynamics, which is not detailed in the slide.
+
+5. **Slide 5:**
+   - Speech: Mentions future evaluation of anti-slip technology and simulation of train operations.
+   - Discrepancy: No significant discrepancies; both the slide and speech align well.
+
+### Step 3: Check Marp Text for Omissions and Suggest Additions
+
+1. **Slide 1:**
+   - Suggestion: Clarify any potential miscommunication in the speech regarding "Higurant characteristics" and "perceived moral deep device."
+
+2. **Slide 2:**
+   - Suggestion: Add a note or bullet point about the challenges posed by platform doors, as mentioned in the speech.
+
+3. **Slide 3:**
+   - Suggestion: Ensure consistency in terminology by using "rail and wheel" instead of "blade and wheel" to avoid confusion.
+
+4. **Slide 4:**
+   - Suggestion: Include more detailed information about the relationship between slip speed and adhesion force, as discussed in the speech.
+
+5. **Slide 5:**
+   - Suggestion: No additional information needed; the slide and speech are consistent.
+
+By addressing these discrepancies and suggestions, the presentation can be more coherent and aligned with the speech data.
+
